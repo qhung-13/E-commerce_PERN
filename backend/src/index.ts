@@ -1,0 +1,24 @@
+import express from "express";
+import cors from "cors";
+import "dotenv/config";
+
+import { clerkMiddleware } from "@clerk/express";
+import { clerkHookHandler } from "./hooks/clerk.js";
+import { getEnv } from "./lib/env.js";
+
+const env = getEnv();
+const app = express();
+
+const rawJson = express.raw({ type: "application/json", limit: "1mb" });
+
+// It's important that you don't parse the webhook event data, it should be in the raw format
+
+app.post("/hooks/clerk", rawJson, (req, res) => {
+  void clerkHookHandler(req, res);
+});
+
+app.use(express.json());
+app.use(cors());
+app.use(clerkMiddleware());
+
+app.listen(env.PORT, () => console.log("Listening on port:", env.PORT));
