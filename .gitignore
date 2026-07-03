@@ -4,6 +4,7 @@ node_modules/
 
 # 2. File môi trường bảo mật (TUYỆT ĐỐI KHÔNG PUSH)
 .env
+.env.example
 .env*.local
 
 # 3. Thư mục build của Frontend 
