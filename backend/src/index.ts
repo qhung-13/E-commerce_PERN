@@ -8,6 +8,7 @@ import path from "node:path";
 import { clerkMiddleware } from "@clerk/express";
 import { clerkHookHandler } from "./hooks/clerk.js";
 import { getEnv } from "./lib/env.js";
+import keepAliveCron from "./lib/cron.js";
 
 const env = getEnv();
 const app = express();
@@ -23,6 +24,10 @@ app.post("/hooks/clerk", rawJson, (req, res) => {
 app.use(express.json());
 app.use(cors());
 app.use(clerkMiddleware());
+
+app.get("/health", (_req, res) => {
+  res.json({ ok: true });
+});
 
 const publicDir = path.join(process.cwd(), "public");
 if (fs.existsSync(publicDir)) {
@@ -43,4 +48,9 @@ if (fs.existsSync(publicDir)) {
   });
 }
 
-app.listen(env.PORT, () => console.log("Listening on port:", env.PORT));
+app.listen(env.PORT, () => {
+  console.log("Listening on port: ", env.PORT);
+  if (env.NODE_ENV === "production") {
+    keepAliveCron.start();
+  }
+});
