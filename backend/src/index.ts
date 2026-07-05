@@ -10,6 +10,9 @@ import { clerkHookHandler } from "./hooks/clerk.js";
 import { getEnv } from "./lib/env.js";
 import keepAliveCron from "./lib/cron.js";
 
+import productRouter from "./routes/productRouter.js";
+import meRouter from "./routes/meRouter.js";
+
 const env = getEnv();
 const app = express();
 
@@ -47,6 +50,9 @@ if (fs.existsSync(publicDir)) {
     res.sendFile(path.join(publicDir, "index.html"), (err) => next(err));
   });
 }
+
+app.use("/api/me", meRouter);
+app.use("api/products", productRouter);
 
 app.listen(env.PORT, () => {
   console.log("Listening on port: ", env.PORT);
