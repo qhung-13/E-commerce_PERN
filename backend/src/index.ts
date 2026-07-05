@@ -12,6 +12,7 @@ import keepAliveCron from "./lib/cron.js";
 
 import productRouter from "./routes/productRouter.js";
 import meRouter from "./routes/meRouter.js";
+import streamRouter from "./routes/streamRouter.js";
 
 const env = getEnv();
 const app = express();
@@ -53,6 +54,7 @@ if (fs.existsSync(publicDir)) {
 
 app.use("/api/me", meRouter);
 app.use("api/products", productRouter);
+app.use("api/stream", streamRouter);
 
 app.listen(env.PORT, () => {
   console.log("Listening on port: ", env.PORT);
