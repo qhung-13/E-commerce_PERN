@@ -7,6 +7,7 @@ import path from "node:path";
 
 import { clerkMiddleware } from "@clerk/express";
 import { clerkHookHandler } from "./hooks/clerk.js";
+import { polarWebhookHandler } from "./hooks/polar.js";
 import { getEnv } from "./lib/env.js";
 import keepAliveCron from "./lib/cron.js";
 
@@ -21,8 +22,12 @@ const rawJson = express.raw({ type: "application/json", limit: "1mb" });
 
 // It's important that you don't parse the webhook event data, it should be in the raw format
 
-app.post("/hooks/clerk", rawJson, (req, res) => {
+app.post("/webhooks/clerk", rawJson, (req, res) => {
   void clerkHookHandler(req, res);
+});
+
+app.post("/webhooks/polar", rawJson, (req, res) => {
+  void polarWebhookHandler(req, res);
 });
 
 app.use(express.json());
